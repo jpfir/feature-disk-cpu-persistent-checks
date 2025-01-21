@@ -68,7 +68,7 @@ class nagios::server (
   $date_format = 'iso8601',
   $admin_email = 'root@localhost',
   $admin_pager = 'pagenagios@localhost',
-  $cfg_append  = undef,
+  Optional[Hash] $cfg_append = undef,
   $service_check_timeout = '60',
   $host_check_timeout    = '30',
   $event_handler_timeout = '30',
@@ -302,9 +302,6 @@ class nagios::server (
   }
 
   # Configuration files
-  if ($cfg_append != undef) {
-    validate_hash($cfg_append)
-  }
   file { '/etc/nagios/cgi.cfg':
     owner   => 'root',
     group   => 'root',
@@ -1102,6 +1099,43 @@ class nagios::server (
   nagios_command { 'check_nrpe_ups':
     command_line => "${nrpe} -c check_ups",
   }
+  nagios_command { 'check_nrpe_patroni_cluster_has_leader':
+    command_line => "${nrpe} -c check_patroni_cluster_has_leader",
+  }
+  nagios_command { 'check_nrpe_patroni_cluster_has_replica':
+    command_line => "${nrpe} -c check_patroni_cluster_has_replica",
+  }
+  nagios_command { 'check_nrpe_patroni_cluster_has_scheduled_action':
+    command_line => "${nrpe} -c check_patroni_cluster_has_scheduled_action",
+  }
+  nagios_command { 'check_nrpe_patroni_cluster_is_in_maintenance':
+    command_line => "${nrpe} -c check_patroni_cluster_is_in_maintenance",
+  }
+  nagios_command { 'check_nrpe_patroni_cluster_node_count':
+    command_line => "${nrpe} -c check_patroni_cluster_node_count",
+  }
+  nagios_command { 'check_nrpe_patroni_node_has_version':
+    command_line => "${nrpe} -c check_patroni_node_has_version",
+  }
+  nagios_command { 'check_nrpe_patroni_node_is_alive':
+    command_line => "${nrpe} -c check_patroni_node_is_alive",
+  }
+  nagios_command { 'check_nrpe_patroni_node_is_leader':
+    command_line => "${nrpe} -c check_patroni_node_is_leader",
+  }
+  nagios_command { 'check_nrpe_patroni_node_is_pending_restart':
+    command_line => "${nrpe} -c check_patroni_node_is_pending_restart",
+  }
+  nagios_command { 'check_nrpe_patroni_node_is_primary':
+    command_line => "${nrpe} -c check_patroni_node_is_primary",
+  }
+  nagios_command { 'check_nrpe_patroni_node_is_replica':
+    command_line => "${nrpe} -c check_patroni_node_is_replica",
+  }
+  nagios_command { 'check_nrpe_patroni_node_replica_lag':
+    command_line => "${nrpe} -c check_patroni_node_replica_lag",
+  }
+
   # Collect virtual resources from check_service
   Nagios_command <<| tag == 'service' |>> {
     notify  => Service['nagios'],
